@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Disaster Response Simulation</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>AI Disaster Response Simulation</h1>
+      <div class="controls">
+        <button id="btnReset">Reset</button>
+        <button id="btnStep">Step</button>
+        <button id="btnAuto">Auto-Run</button>
+        <button id="btnStop">Stop</button>
+        <button id="btnRecommend">Recommend Path</button>
+        <button id="btnCollect">Collect</button>
+        <button id="btnRescue">Rescue</button>
+        <span id="status">Idle</span>
+      </div>
+      <div class="layout">
+        <div>
+          <canvas id="grid" width="720" height="720" aria-label="Grid"></canvas>
+          <div class="legend">Legend: hazards (red overlay), victims (orange pin), resources (green square), team (white rescuer icon)</div>
+        </div>
+        <div class="panel">
+          <img src="/static/rescuer.svg" alt="Rescuer" width="64" height="64" />
+          <div class="badges" id="badges"></div>
+          <h3>Stats</h3>
+          <pre id="stats">Awaiting state...</pre>
+          <h3>Risk Trend</h3>
+          <canvas id="riskChart" height="120"></canvas>
+          <h3>Victims / Resources</h3>
+          <canvas id="vrChart" height="120"></canvas>
+          <h3>Log</h3>
+          <pre id="log"></pre>
+        </div>
+      </div>
+    </div>
+    <script src="/static/main.js"></script>
+  </body>
+</html>
