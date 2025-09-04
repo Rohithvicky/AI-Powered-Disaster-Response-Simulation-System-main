@@ -122,25 +122,13 @@ function draw(){
   // Hazards soft gradient with subtle pulse
   const t = (performance.now() % 2000) / 2000; // 0..1
   const pulse = 0.75 + 0.25 * Math.sin(t * Math.PI * 2);
-  function hexToRgba(hex, a){
-    const h = hex.replace('#','');
-    const bigint = parseInt(h,16);
-    const r = (h.length===3? (parseInt(h[0]+h[0],16)) : (bigint>>16)&255);
-    const g = (h.length===3? (parseInt(h[1]+h[1],16)) : (bigint>>8)&255);
-    const b = (h.length===3? (parseInt(h[2]+h[2],16)) : (bigint)&255);
-    return `rgba(${r},${g},${b},${a})`;
-  }
-  for (const entry of state.hazards){
-    // support [i,j,val] and [i,j,val,type]
-    const i = entry[0], j = entry[1], val = entry[2];
-    const type = entry.length > 3 ? entry[3] : undefined;
+  for (const [i,j,val] of state.hazards){
     const x = j*cellSize, y = i*cellSize;
     const r = Math.max(cellSize*0.9, 16);
     const centerX = x + cellSize/2, centerY = y + cellSize/2;
-    const hv = getHazardVisual(type);
     const grd = ctx.createRadialGradient(centerX, centerY, r*0.15, centerX, centerY, r);
     const alpha = Math.min(.6, Math.max(.18, val * 0.9)) * pulse;
-    grd.addColorStop(0, `${hexToRgba(hv.color, alpha)}`);
+    grd.addColorStop(0, `rgba(239,68,68,${alpha})`);
     grd.addColorStop(1, 'rgba(239,68,68,0)');
     ctx.fillStyle = grd;
     ctx.fillRect(x, y, cellSize, cellSize);
@@ -150,7 +138,7 @@ function draw(){
     const ix = x + (cellSize - w) / 2;
     const iy = y + (cellSize - w) / 2;
     ctx.globalAlpha = 0.75 * Math.min(1, val + 0.2);
-    try { ctx.drawImage(hv.icon, ix, iy, w, w); } catch {}
+    try { ctx.drawImage(iconWarning, ix, iy, w, w); } catch {}
     ctx.globalAlpha = 1;
   }
 

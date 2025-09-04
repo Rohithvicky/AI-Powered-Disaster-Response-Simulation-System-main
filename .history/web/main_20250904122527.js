@@ -30,31 +30,14 @@ const victimImg = new Image(); victimImg.src = '/static/victim.svg';
 rescuerImg.decoding = 'async'; rescuerImg.loading = 'eager';
 victimImg.decoding = 'async'; victimImg.loading = 'eager';
 
-// Inline SVG icons for overlays (warning + terrain context) and hazard types
+// Inline SVG icons for overlays (warning + terrain context)
 function createIcon(svg){ const img = new Image(); img.src = 'data:image/svg+xml;utf8,'+encodeURIComponent(svg); img.decoding='async'; img.loading='eager'; return img; }
-function makeWarningIcon(hex){ return createIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 8l26 48H6L32 8z" fill="${hex}"/><path d="M32 22v18" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="32" cy="48" r="3.5" fill="#fff"/></svg>`); }
+const iconWarning = createIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 8l26 48H6L32 8z" fill="#ef4444"/><path d="M32 22v18" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="32" cy="48" r="3.5" fill="#fff"/></svg>');
 const iconUrban = createIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="8" y="30" width="16" height="26" fill="#1f2937"/><rect x="28" y="22" width="16" height="34" fill="#334155"/><rect x="48" y="28" width="8" height="28" fill="#475569"/></svg>');
 const iconRoad = createIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="28" y="6" width="8" height="52" rx="2" fill="#475569"/><rect x="31" y="10" width="2" height="6" fill="#e5e7eb"/><rect x="31" y="22" width="2" height="6" fill="#e5e7eb"/><rect x="31" y="34" width="2" height="6" fill="#e5e7eb"/><rect x="31" y="46" width="2" height="6" fill="#e5e7eb"/></svg>');
 const iconSand = createIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M6 48l14-16 10 12 8-10 20 14H6z" fill="#eab308"/></svg>');
 const iconGrass = createIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M10 50c10-8 12-8 22 0 10-8 12-8 22 0" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/></svg>');
 const iconWater = createIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 10c10 14 14 20 14 26a14 14 0 1 1-28 0c0-6 4-12 14-26z" fill="#38bdf8"/></svg>');
-
-// Hazard type mapping (color + icon)
-const hazardVisuals = {
-  fire: { color: '#ef4444', icon: makeWarningIcon('#ef4444') },
-  flood: { color: '#38bdf8', icon: makeWarningIcon('#38bdf8') },
-  collapse: { color: '#f59e0b', icon: makeWarningIcon('#f59e0b') },
-  chemical: { color: '#22d3ee', icon: makeWarningIcon('#22d3ee') },
-  electrical: { color: '#facc15', icon: makeWarningIcon('#facc15') },
-  radiation: { color: '#a78bfa', icon: makeWarningIcon('#a78bfa') }
-};
-function getHazardVisual(type){
-  if (type && hazardVisuals[type]) return hazardVisuals[type];
-  // fallback to global disaster_type if available
-  const globalType = state && state.disaster_type;
-  if (globalType && hazardVisuals[globalType]) return hazardVisuals[globalType];
-  return hazardVisuals.fire; // default
-}
 let lastRecommendedPath = [];
 let showSurvival = false;
 
@@ -122,25 +105,13 @@ function draw(){
   // Hazards soft gradient with subtle pulse
   const t = (performance.now() % 2000) / 2000; // 0..1
   const pulse = 0.75 + 0.25 * Math.sin(t * Math.PI * 2);
-  function hexToRgba(hex, a){
-    const h = hex.replace('#','');
-    const bigint = parseInt(h,16);
-    const r = (h.length===3? (parseInt(h[0]+h[0],16)) : (bigint>>16)&255);
-    const g = (h.length===3? (parseInt(h[1]+h[1],16)) : (bigint>>8)&255);
-    const b = (h.length===3? (parseInt(h[2]+h[2],16)) : (bigint)&255);
-    return `rgba(${r},${g},${b},${a})`;
-  }
-  for (const entry of state.hazards){
-    // support [i,j,val] and [i,j,val,type]
-    const i = entry[0], j = entry[1], val = entry[2];
-    const type = entry.length > 3 ? entry[3] : undefined;
+  for (const [i,j,val] of state.hazards){
     const x = j*cellSize, y = i*cellSize;
     const r = Math.max(cellSize*0.9, 16);
     const centerX = x + cellSize/2, centerY = y + cellSize/2;
-    const hv = getHazardVisual(type);
     const grd = ctx.createRadialGradient(centerX, centerY, r*0.15, centerX, centerY, r);
     const alpha = Math.min(.6, Math.max(.18, val * 0.9)) * pulse;
-    grd.addColorStop(0, `${hexToRgba(hv.color, alpha)}`);
+    grd.addColorStop(0, `rgba(239,68,68,${alpha})`);
     grd.addColorStop(1, 'rgba(239,68,68,0)');
     ctx.fillStyle = grd;
     ctx.fillRect(x, y, cellSize, cellSize);
@@ -150,7 +121,7 @@ function draw(){
     const ix = x + (cellSize - w) / 2;
     const iy = y + (cellSize - w) / 2;
     ctx.globalAlpha = 0.75 * Math.min(1, val + 0.2);
-    try { ctx.drawImage(hv.icon, ix, iy, w, w); } catch {}
+    try { ctx.drawImage(iconWarning, ix, iy, w, w); } catch {}
     ctx.globalAlpha = 1;
   }
 

@@ -122,14 +122,6 @@ function draw(){
   // Hazards soft gradient with subtle pulse
   const t = (performance.now() % 2000) / 2000; // 0..1
   const pulse = 0.75 + 0.25 * Math.sin(t * Math.PI * 2);
-  function hexToRgba(hex, a){
-    const h = hex.replace('#','');
-    const bigint = parseInt(h,16);
-    const r = (h.length===3? (parseInt(h[0]+h[0],16)) : (bigint>>16)&255);
-    const g = (h.length===3? (parseInt(h[1]+h[1],16)) : (bigint>>8)&255);
-    const b = (h.length===3? (parseInt(h[2]+h[2],16)) : (bigint)&255);
-    return `rgba(${r},${g},${b},${a})`;
-  }
   for (const entry of state.hazards){
     // support [i,j,val] and [i,j,val,type]
     const i = entry[0], j = entry[1], val = entry[2];

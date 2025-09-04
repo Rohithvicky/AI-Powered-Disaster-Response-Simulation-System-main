@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Disaster Response Simulation - Command Center</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Header Section -->
+      <header class="dashboard-header">
+        <div class="header-content">
+          <div class="logo-section">
+            <div class="logo-icon">🚨</div>
+            <h1>AI Disaster Response Simulation</h1>
+            <span class="subtitle">Command Center Dashboard</span>
+          </div>
+          <div class="status-display">
+            <div class="status-chip" id="status">Idle</div>
+            <div class="simulation-time" id="simulation-time">Step 0</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Dashboard Grid -->
+      <main class="dashboard-main">
+        <!-- Left Panel - Simulation Grid -->
+        <section class="simulation-panel">
+          <div class="panel-header">
+            <h2>Disaster Zone</h2>
+            <div class="grid-controls">
+              <button class="control-btn" id="btnZoomIn" title="Zoom In">🔍+</button>
+              <button class="control-btn" id="btnZoomOut" title="Zoom Out">🔍-</button>
+              <button class="control-btn" id="btnReset" title="Reset Simulation">🔄</button>
+            </div>
+          </div>
+          
+          <div class="grid-container">
+            <canvas id="grid" width="720" height="720" aria-label="Disaster Simulation Grid"></canvas>
+            <div class="grid-overlay" id="gridOverlay"></div>
+          </div>
+          
+          <div class="legend-panel">
+            <h3>Legend</h3>
+            <div class="legend-items">
+              <div class="legend-item">
+                <div class="legend-icon hazard-icon"></div>
+                <span>Hazards (Risk Level)</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-icon victim-icon"></div>
+                <span>Victims</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-icon resource-icon"></div>
+                <span>Resources</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-icon team-icon"></div>
+                <span>Rescue Team</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Panel - Controls & Analytics -->
+        <section class="analytics-panel">
+          <!-- Control Panel -->
+          <div class="control-panel">
+            <h3>Simulation Controls</h3>
+            <div class="control-groups">
+              <div class="control-group">
+                <h4>Core Controls</h4>
+                <div class="button-row">
+                  <button class="btn btn-primary" id="btnStep" title="Advance simulation by one step">
+                    <span class="btn-icon">▶️</span>
+                    <span class="btn-text">Step</span>
+                  </button>
+                  <button class="btn btn-success" id="btnAuto" title="Start automatic simulation">
+                    <span class="btn-icon">🚀</span>
+                    <span class="btn-text">Auto-Run</span>
+                  </button>
+                  <button class="btn btn-warning" id="btnStop" title="Stop automatic simulation">
+                    <span class="btn-icon">⏹️</span>
+                    <span class="btn-text">Stop</span>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="control-group">
+                <h4>AI Actions</h4>
+                <div class="button-row">
+                  <button class="btn btn-info" id="btnRecommend" title="Get AI-recommended path to nearest victim">
+                    <span class="btn-icon">🧠</span>
+                    <span class="btn-text">AI Path</span>
+                  </button>
+                  <button class="btn btn-secondary" id="btnCollect" title="Collect resources at current location">
+                    <span class="btn-icon">📦</span>
+                    <span class="btn-text">Collect</span>
+                  </button>
+                  <button class="btn btn-danger" id="btnRescue" title="Attempt to rescue victim at current location">
+                    <span class="btn-icon">🆘</span>
+                    <span class="btn-text">Rescue</span>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="control-group">
+                <h4>Display Options</h4>
+                <div class="button-row">
+                  <button class="btn btn-outline" id="btnToggleSurvival" title="Toggle survival probability display">
+                    <span class="btn-icon">📊</span>
+                    <span class="btn-text">Survival%</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metrics Dashboard -->
+          <div class="metrics-dashboard">
+            <h3>Performance Metrics</h3>
+            <div class="metrics-grid" id="metrics-grid">
+              <!-- Metrics will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="charts-section">
+            <div class="chart-tabs">
+              <button class="tab-btn active" data-chart="risk">Risk Trend</button>
+              <button class="tab-btn" data-chart="victims">Victims & Resources</button>
+              <button class="tab-btn" data-chart="efficiency">Efficiency</button>
+            </div>
+            
+            <div class="chart-container active" id="riskChart">
+              <canvas id="riskChartCanvas"></canvas>
+            </div>
+            
+            <div class="chart-container" id="victimsChart">
+              <canvas id="victimsChartCanvas"></canvas>
+            </div>
+            
+            <div class="chart-container" id="efficiencyChart">
+              <canvas id="efficiencyChartCanvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Debug Panel (Collapsible) -->
+          <div class="debug-panel">
+            <div class="debug-header" onclick="toggleDebug()">
+              <h3>Debug Information</h3>
+              <span class="toggle-icon">▼</span>
+            </div>
+            <div class="debug-content" id="debugContent">
+              <div class="debug-section">
+                <h4>Raw Statistics</h4>
+                <pre id="stats" class="debug-json">Awaiting state...</pre>
+              </div>
+              <div class="debug-section">
+                <h4>System Log</h4>
+                <pre id="log" class="debug-log"></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal-overlay" id="resultsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Simulation Complete</h2>
+          <button class="modal-close" onclick="closeResultsModal()">×</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Results content will be populated -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" onclick="closeResultsModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tooltip Container -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="/static/main.js"></script>
+  </body>
+</html>
