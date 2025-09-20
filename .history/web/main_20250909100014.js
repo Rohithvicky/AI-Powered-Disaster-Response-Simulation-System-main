@@ -228,18 +228,17 @@ async function startAuto(){ if (autoTimer) return; logEl.textContent += 'Auto-ru
 function stopAuto(){ if (autoTimer){ clearTimeout(autoTimer); autoTimer = null; logEl.textContent += 'Auto-run stopped\n'; } }
 
 // Controls
-document.getElementById('btnReset').onclick = async ()=>{ stopAuto(); await safe(()=>api.reset(),'reset'); logEl.textContent += 'Reset\n'; lastRecommendedPath = []; await refresh(); };
-document.getElementById('btnStep').onclick = async ()=>{ stopAuto(); await autoStepOnce(); };
-document.getElementById('btnAuto').onclick = startAuto;
-document.getElementById('btnStop').onclick = stopAuto;
-document.getElementById('btnRecommend').onclick = async ()=>{ const data = await safe(()=>api.recommend(),'recommend'); if (!data) return; lastRecommendedPath = data.path || []; draw(); logEl.textContent += `AI Path → len:${data.length||0}, risk:${(data.risk||0).toFixed(2)}, expectedSurvival:${data.expected_survival?Math.round(data.expected_survival*100)+'%':'N/A'}\n`; };
+ document.getElementById('btnReset').onclick = async ()=>{ stopAuto(); await safe(()=>api.reset(),'reset'); logEl.textContent += 'Reset\n'; lastRecommendedPath = []; await refresh(); };
+ document.getElementById('btnAuto').onclick = startAuto;
+ document.getElementById('btnStop').onclick = stopAuto;
+ document.getElementById('btnRecommend').onclick = async ()=>{ const data = await safe(()=>api.recommend(),'recommend'); if (!data) return; lastRecommendedPath = data.path || []; draw(); logEl.textContent += `AI Path → len:${data.length||0}, risk:${(data.risk||0).toFixed(2)}, expectedSurvival:${data.expected_survival?Math.round(data.expected_survival*100)+'%':'N/A'}\n`; };
 
 // Click-to-move
-gridCanvas.addEventListener('click', async (e)=>{ if(!state) return; const rect = gridCanvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const j = Math.floor(x / cellSize); const i = Math.floor(y / cellSize); if (i<0||j<0||i>=state.grid_size||j>=state.grid_size){ logEl.textContent += `Out of bounds (${i},${j})\n`; return; } const res = await safe(()=>api.move(i,j),'move'); if (res && res.ok){ logEl.textContent += `Moved to (${i},${j})\n`; await refresh(); } else { logEl.textContent += `Invalid move (${i},${j})\n`; } });
+ gridCanvas.addEventListener('click', async (e)=>{ if(!state) return; const rect = gridCanvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const j = Math.floor(x / cellSize); const i = Math.floor(y / cellSize); if (i<0||j<0||i>=state.grid_size||j>=state.grid_size){ logEl.textContent += `Out of bounds (${i},${j})\n`; return; } const res = await safe(()=>api.move(i,j),'move'); if (res && res.ok){ logEl.textContent += `Moved to (${i},${j})\n`; await refresh(); } else { logEl.textContent += `Invalid move (${i},${j})\n`; } });
 
-// Initialize
-initCharts();
-refresh();
+
+// Init
+(function(){ initCharts(); })();
 
 // Animate hazards by redrawing periodically for pulse
 setInterval(()=>{ if(state) draw(); }, 300);

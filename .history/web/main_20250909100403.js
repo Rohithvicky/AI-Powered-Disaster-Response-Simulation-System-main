@@ -241,6 +241,10 @@ gridCanvas.addEventListener('click', async (e)=>{ if(!state) return; const rect 
 initCharts();
 refresh();
 
+
+// Init
+(function(){ initCharts(); })();
+
 // Animate hazards by redrawing periodically for pulse
 setInterval(()=>{ if(state) draw(); }, 300);
 (async ()=>{ const l = await safe(()=>api.legend(),'legend'); if (l) logEl.textContent += `Legend: ${JSON.stringify(l)}\n`; await refresh(); })();
