@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="heliGrad" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <!-- Main body -->
+  <ellipse cx="32" cy="32" rx="20" ry="12" fill="url(#heliGrad)"/>
+  <!-- Cockpit -->
+  <ellipse cx="32" cy="28" rx="8" ry="6" fill="#dbeafe" opacity="0.8"/>
+  <!-- Main rotor -->
+  <line x1="12" y1="20" x2="52" y2="20" stroke="#374151" stroke-width="3"/>
+  <circle cx="32" cy="20" r="2" fill="#374151"/>
+  <!-- Tail rotor -->
+  <line x1="50" y1="28" x2="50" y2="36" stroke="#374151" stroke-width="2"/>
+  <!-- Landing skids -->
+  <path d="M20 44 Q32 48 44 44" stroke="#374151" stroke-width="2" fill="none"/>
+  <!-- Propeller lines -->
+  <line x1="12" y1="18" x2="12" y2="22" stroke="#6b7280" stroke-width="1"/>
+  <line x1="52" y1="18" x2="52" y2="22" stroke="#6b7280" stroke-width="1"/>
+</svg>
+  <defs>
+    <linearGradient id="heliGrad" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <!-- Main body -->
+  <ellipse cx="32" cy="32" rx="20" ry="12" fill="url(#heliGrad)"/>
+  <!-- Cockpit -->
+  <ellipse cx="32" cy="28" rx="8" ry="6" fill="#dbeafe" opacity="0.8"/>
+  <!-- Main rotor -->
+  <line x1="12" y1="20" x2="52" y2="20" stroke="#374151" stroke-width="3"/>
+  <circle cx="32" cy="20" r="2" fill="#374151"/>
+  <!-- Tail rotor -->
+  <line x1="50" y1="28" x2="50" y2="36" stroke="#374151" stroke-width="2"/>
+  <!-- Landing skids -->
+  <path d="M20 44 Q32 48 44 44" stroke="#374151" stroke-width="2" fill="none"/>
+  <!-- Propeller lines -->
+  <line x1="12" y1="18" x2="12" y2="22" stroke="#6b7280" stroke-width="1"/>
+  <line x1="52" y1="18" x2="52" y2="22" stroke="#6b7280" stroke-width="1"/>
+</svg>
