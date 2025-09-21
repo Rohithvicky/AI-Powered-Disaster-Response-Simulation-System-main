@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Disaster Response Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>AI Disaster Response Simulation</h1>
+                </div>
+                <div class="header-controls">
+                    <div class="status-indicator" id="statusIndicator">
+                        <div class="status-dot"></div>
+                        <span id="statusText">Ready</span>
+                    </div>
+                    <div class="time-display" id="timeDisplay">00:00:00</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="control-panel">
+                    <h3><i class="fas fa-cogs"></i> Control Panel</h3>
+                    <div class="control-buttons">
+                        <button id="btnStart" class="btn btn-primary"><i class="fas fa-play"></i> Start</button>
+                        <button id="btnStop" class="btn btn-danger" disabled><i class="fas fa-stop"></i> Stop</button>
+                        <button id="btnReset" class="btn btn-secondary"><i class="fas fa-refresh"></i> Reset</button>
+                        <button id="btnPause" class="btn btn-warning" disabled><i class="fas fa-pause"></i> Pause</button>
+                        <button id="btnSoundToggle" class="btn btn-secondary"><i class="fas fa-volume-up"></i> Sound On</button>
+                        <button id="btnTestSound" class="btn btn-secondary"><i class="fas fa-music"></i> Test Sound</button>
+                    </div>
+                </div>
+
+                <div class="metrics-dashboard">
+                    <h3><i class="fas fa-chart-line"></i> Key Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card disaster-type-card">
+                            <div class="metric-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="disasterType">Earthquake</div>
+                                <div class="metric-label">Disaster Type</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-users"></i></div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="casualtiesSaved">0</div>
+                                <div class="metric-label">Casualties Saved</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="responseTime">0s</div>
+                                <div class="metric-label">Avg Response Time</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="efficiency">0%</div>
+                                <div class="metric-label">Efficiency</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-battery-full"></i></div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="teamEnergy">100%</div>
+                                <div class="metric-label">Team Energy</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-heartbeat"></i></div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="avgSurvival">100%</div>
+                                <div class="metric-label">Avg Survival Rate</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="criticalVictims">0</div>
+                                <div class="metric-label">Critical Victims</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="center-area">
+                <div class="simulation-grid-panel">
+                    <div class="panel-header">
+                        <h2>Disaster Simulation Grid</h2>
+                        <div class="grid-controls">
+                            <button id="btnRecommendPath" class="btn btn-primary btn-recommend">
+                                <i class="fas fa-route"></i> 
+                                <span class="btn-text">AI Path Recommendation</span>
+                                <span class="btn-subtitle">Optimal rescue route</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid-container">
+                        <canvas id="simulationGrid" width="600" height="600"></canvas>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="sidebar">
+                <div class="disasters-panel">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Active Disasters</h3>
+                    <div id="disastersList" class="disaster-list"></div>
+                </div>
+
+                <div class="teams-panel">
+                    <h3><i class="fas fa-users"></i> Rescue Teams</h3>
+                    <div id="teamsList" class="team-list"></div>
+                </div>
+
+                <div class="decisions-panel">
+                    <h3><i class="fas fa-brain"></i> AI Decisions</h3>
+                    <div id="decisionsLog" class="log-panel"></div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="footer">
+            <p>AI Disaster Response Simulation System v2.0</p>
+            <p>Last Update: <span id="lastUpdate">N/A</span></p>
+        </footer>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
