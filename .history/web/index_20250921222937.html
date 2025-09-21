@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Disaster Response Simulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>AI Disaster Response Simulation</h1>
+      <div class="controls">
+        <button id="btnReset" class="btn btn-info" title="Reset simulation to a new scenario"><span class="btn-icon">🔄</span><span class="btn-text">Reset</span></button>
+        <button id="btnStep" class="btn btn-primary" title="Advance one time step"><span class="btn-icon">⏭️</span><span class="btn-text">Step</span></button>
+        <button id="btnAuto" class="btn btn-success" title="Start auto-run"><span class="btn-icon">▶️</span><span class="btn-text">Auto-Run</span></button>
+        <button id="btnStop" class="btn btn-danger" title="Stop auto-run"><span class="btn-icon">⏹️</span><span class="btn-text">Stop</span></button>
+        <button id="btnRecommend" class="btn btn-info" title="Get AI-recommended path"><span class="btn-icon">🧭</span><span class="btn-text">Recommend Path</span></button>
+        <span id="status" class="status-chip">Idle</span>
+      </div>
+      <div class="layout">
+        <div>
+          <canvas id="grid" width="720" height="720" aria-label="Grid"></canvas>
+          <div class="legend">Legend: hazards (red gradient), victims (orange icon), resources (green square), team (white rescuer icon)</div>
+        </div>
+        <div class="panel">
+          <img src="/static/rescuer.svg" alt="Rescuer" width="64" height="64" />
+          <div class="badges" id="badges"></div>
+          <div class="metric-progress" aria-label="Efficiency">
+            <div id="efficiencyBar" class="metric-progress-bar" style="width:0%"></div>
+          </div>
+          <h3>Stats</h3>
+          <details id="statsDetails">
+            <summary class="debug-header"><span>Advanced JSON Stats</span><span class="toggle-icon">▸</span></summary>
+            <div class="debug-content">
+              <div class="debug-section">
+                <pre id="stats" class="debug-json">Awaiting state...</pre>
+              </div>
+            </div>
+          </details>
+          <h3>Risk Trend</h3>
+          <canvas id="riskChart" height="120"></canvas>
+          <h3>Victims / Resources</h3>
+          <canvas id="vrChart" height="120"></canvas>
+          <h3>Log</h3>
+          <pre id="log"></pre>
+        </div>
+      </div>
+    </div>
+    <script src="/static/main.js"></script>
+  </body>
+</html>

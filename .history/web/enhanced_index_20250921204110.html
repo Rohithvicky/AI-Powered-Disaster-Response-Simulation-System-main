@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Disaster Response Simulation - Professional Dashboard</title>
+    <link rel="stylesheet" href="enhanced_styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>AI Disaster Response Simulation</h1>
+                </div>
+                <div class="header-controls">
+                    <div class="status-indicator" id="statusIndicator">
+                        <div class="status-dot"></div>
+                        <span id="statusText">Ready</span>
+                    </div>
+                    <div class="time-display" id="timeDisplay">00:00:00</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Sidebar -->
+            <aside class="sidebar">
+                <!-- Control Panel -->
+                <div class="control-panel">
+                    <h3><i class="fas fa-cogs"></i> Control Panel</h3>
+                    <div class="control-buttons">
+                        <button id="btnStart" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Start Simulation
+                        </button>
+                        <button id="btnStop" class="btn btn-danger" disabled>
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                        <button id="btnReset" class="btn btn-secondary">
+                            <i class="fas fa-refresh"></i> Reset
+                        </button>
+                        <button id="btnPause" class="btn btn-warning" disabled>
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                    </div>
+                    
+                    <div class="simulation-controls">
+                        <label class="control-label">
+                            <input type="checkbox" id="autoMode" checked>
+                            <span class="checkmark"></span>
+                            Auto Mode (AI Decisions)
+                        </label>
+                        <label class="control-label">
+                            <input type="checkbox" id="realTimeMode">
+                            <span class="checkmark"></span>
+                            Real-time Updates
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Metrics Dashboard -->
+                <div class="metrics-dashboard">
+                    <h3><i class="fas fa-chart-line"></i> Key Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="casualtiesSaved">0</div>
+                                <div class="metric-label">Casualties Saved</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="responseTime">0s</div>
+                                <div class="metric-label">Avg Response Time</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="efficiency">0%</div>
+                                <div class="metric-label">Efficiency</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-ambulance"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="activeDisasters">0</div>
+                                <div class="metric-label">Active Disasters</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resource Status -->
+                <div class="resource-status">
+                    <h3><i class="fas fa-tools"></i> Resource Status</h3>
+                    <div class="resource-list" id="resourceList">
+                        <!-- Resources will be populated here -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Area -->
+            <main class="main-area">
+                <!-- Simulation Grid -->
+                <div class="simulation-container">
+                    <div class="simulation-header">
+                        <h2><i class="fas fa-map"></i> Disaster Simulation Grid</h2>
+                        <div class="grid-controls">
+                            <button id="btnZoomIn" class="btn btn-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button id="btnZoomOut" class="btn btn-sm">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button id="btnFullscreen" class="btn btn-sm">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid-container">
+                        <canvas id="simulationGrid" width="800" height="800"></canvas>
+                        <div class="grid-overlay" id="gridOverlay">
+                            <!-- Overlay elements will be added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-tabs">
+                        <button class="tab-btn active" data-tab="performance">Performance</button>
+                        <button class="tab-btn" data-tab="resources">Resources</button>
+                        <button class="tab-btn" data-tab="disasters">Disasters</button>
+                        <button class="tab-btn" data-tab="ai">AI Analytics</button>
+                    </div>
+                    
+                    <div class="chart-content">
+                        <div class="tab-panel active" id="performance-tab">
+                            <div class="chart-container">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="tab-panel" id="resources-tab">
+                            <div class="chart-container">
+                                <canvas id="resourceChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="tab-panel" id="disasters-tab">
+                            <div class="chart-container">
+                                <canvas id="disasterChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="tab-panel" id="ai-tab">
+                            <div class="chart-container">
+                                <canvas id="aiChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Sidebar -->
+            <aside class="right-sidebar">
+                <!-- Active Disasters -->
+                <div class="disasters-panel">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Active Disasters</h3>
+                    <div class="disasters-list" id="disastersList">
+                        <!-- Disasters will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Rescue Teams -->
+                <div class="teams-panel">
+                    <h3><i class="fas fa-users-cog"></i> Rescue Teams</h3>
+                    <div class="teams-list" id="teamsList">
+                        <!-- Teams will be populated here -->
+                    </div>
+                </div>
+
+                <!-- AI Decisions Log -->
+                <div class="decisions-panel">
+                    <h3><i class="fas fa-brain"></i> AI Decisions</h3>
+                    <div class="decisions-log" id="decisionsLog">
+                        <!-- Decisions will be populated here -->
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <span>AI Disaster Response Simulation System v2.0</span>
+                </div>
+                <div class="footer-right">
+                    <span id="lastUpdate">Last Update: Never</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading Simulation...</p>
+        </div>
+    </div>
+
+    <!-- Modal for Settings -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Simulation Settings</h3>
+                <button class="modal-close" id="closeSettings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label>Grid Size</label>
+                    <select id="gridSize">
+                        <option value="15">15x15</option>
+                        <option value="20" selected>20x20</option>
+                        <option value="25">25x25</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Simulation Speed</label>
+                    <select id="simulationSpeed">
+                        <option value="slow">Slow (1x)</option>
+                        <option value="normal" selected>Normal (2x)</option>
+                        <option value="fast">Fast (4x)</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>AI Decision Frequency</label>
+                    <select id="aiFrequency">
+                        <option value="1">Every Step</option>
+                        <option value="2" selected>Every 2 Steps</option>
+                        <option value="5">Every 5 Steps</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="saveSettings">Save Settings</button>
+                <button class="btn btn-secondary" id="cancelSettings">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="enhanced_main.js"></script>
+</body>
+</html>

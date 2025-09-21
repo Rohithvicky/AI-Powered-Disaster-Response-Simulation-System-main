@@ -1,0 +1,29 @@
+{
+  "simulation": {
+    "grid_size": 20,
+    "max_time_steps": 100,
+    "disaster_types": ["earthquake", "flood", "fire", "storm"],
+    "victim_count_range": [5, 15],
+    "resource_count_range": [3, 8],
+    "hazard_intensity_range": [0.1, 0.9]
+  },
+  "ai": {
+    "heuristic_weight": 0.7,
+    "exploration_weight": 0.3,
+    "probability_threshold": 0.6,
+    "max_search_depth": 10
+  },
+  "display": {
+    "refresh_rate": 0.5,
+    "show_probabilities": true,
+    "show_paths": true,
+    "color_output": true
+  },
+  "rescue_team": {
+    "initial_resources": 10,
+    "max_resources": 10,
+    "fatigue_rate": 0.1,
+    "rest_recovery": 0.2,
+    "efficiency_threshold": 0.4
+  }
+}

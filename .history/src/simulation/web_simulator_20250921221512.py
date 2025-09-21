@@ -57,14 +57,11 @@ class WebSimulator:
 
     def reset(self):
         size = self.config.get("simulation", "grid_size", 20)
-        # Generate single disaster scenario
-        scenario = self.generator.generate_disaster_scenario(size)
-        disaster_type = scenario['disaster_type']
-        grid = scenario['grid']
-        hazards = scenario['hazards']
-        victims = scenario['victims']
-        resources = scenario['resources']  # Now includes resource types
-        
+        disaster_type = random.choice(self.config.get("simulation", "disaster_types", ["earthquake"]))
+        grid = self.generator.generate_grid(size)
+        hazards = self.generator.generate_hazards(size, disaster_type)
+        victims = self.generator.generate_victims(size)
+        resources = self.generator.generate_resources(size)
         team = RescueTeam((0, 0), size)
         self.state = WebSimState(
             time_step=0,
@@ -74,7 +71,6 @@ class WebSimulator:
             victims=victims,
             resources=resources,
             rescue_team=team,
-            disaster_type=disaster_type,
         )
         self.stats = {
             'victims_saved': 0,
@@ -84,7 +80,6 @@ class WebSimulator:
             'efficiency_score': 0.0,
             'initial_victims': len(victims),
             'initial_resources': len(resources),
-            'disaster_type': disaster_type,
         }
         self.telemetry = {
             'risk_history': [self.stats['total_risk']],
