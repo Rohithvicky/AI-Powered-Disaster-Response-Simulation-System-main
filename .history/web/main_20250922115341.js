@@ -166,10 +166,7 @@ class SimulationDashboard {
         document.getElementById('btnPause').addEventListener('click', () => this.pauseSimulation());
         document.getElementById('btnRecommendPath').addEventListener('click', () => this.recommendPath());
         document.getElementById('btnSoundToggle').addEventListener('click', () => this.toggleSound());
-        const testBtn = document.getElementById('btnTestSound');
-        if (testBtn) {
-            testBtn.remove();
-        }
+        document.getElementById('btnTestSound').addEventListener('click', () => this.testSound());
         
         // Initialize audio context on first user interaction
         document.addEventListener('click', () => this.initializeAudio(), { once: true });

@@ -315,7 +315,7 @@ class DisasterSimulator:
                             
                             if random.random() < spread_prob:
                                 new_intensity = intensity * random.uniform(0.4, 0.7)  # Slower intensity transfer
-                                new_hazards[(nr, nc)] = max(new_hazards.get((nr, nc), 0), new_intensity)
+                            new_hazards[(nr, nc)] = max(new_hazards.get((nr, nc), 0), new_intensity)
         
         # Intensify existing hazards over time (slower changes)
         for pos in list(new_hazards.keys()):
