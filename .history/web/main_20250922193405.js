@@ -671,14 +671,10 @@ class SimulationDashboard {
             });
         }
         
-        // Draw resources with proper disaster response colors (only used_* and rescue_team)
+        // Draw resources with proper disaster response colors
         if (this.simulationState.resources) {
             this.simulationState.resources.forEach(resource => {
                 const [i, j, resourceType] = resource;
-                // Skip unused static resources to avoid cluttering the grid
-                if (resourceType && !resourceType.startsWith('used_') && resourceType !== 'rescue_team') {
-                    return;
-                }
                 const x = j * cellSize;
                 const y = i * cellSize;
                 
@@ -707,7 +703,7 @@ class SimulationDashboard {
                 ctx.fillStyle = baseColor;
                 ctx.fillRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
                 
-                // Map resource types to icons
+                // Map resource types to emoji icons
                 const iconMap = {
                     'ambulance': 'ambulance-icon',
                     'fire_truck': 'fire-truck-icon',
@@ -881,14 +877,7 @@ class SimulationDashboard {
         };
         Object.entries(map).forEach(([key, file]) => {
             const img = new Image();
-            img.onload = () => {
-                // Redraw grid when an icon finishes loading
-                this.drawGrid();
-            };
-            img.onerror = () => {
-                console.warn('Failed to load icon', file);
-            };
-            img.src = file + '?v=3';
+            img.src = file + '?v=1';
             this.iconImages[key] = img;
         });
     }

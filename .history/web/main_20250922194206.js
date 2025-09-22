@@ -888,7 +888,7 @@ class SimulationDashboard {
             img.onerror = () => {
                 console.warn('Failed to load icon', file);
             };
-            img.src = file + '?v=3';
+            img.src = file + '?v=2';
             this.iconImages[key] = img;
         });
     }

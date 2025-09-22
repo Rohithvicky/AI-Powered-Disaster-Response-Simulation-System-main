@@ -345,20 +345,16 @@ class DisasterSimulator:
             hazard_intensity = self.state.hazards.get(victim.position, 0)
             time_factor = self.state.time_step - victim.time_discovered
             
-            # Much slower survival decrease with caps for longer lifespan
-            base_decay = min(0.05, time_factor * 0.002)  # very gentle over time
-            hazard_decay = hazard_intensity * 0.005       # gentler hazard impact
-            survival_decrease = base_decay + hazard_decay
-            # absolute per-step cap to avoid sudden drops
-            survival_decrease = min(survival_decrease, 0.01)
+            # Much slower survival decrease - victims should last longer
+            survival_decrease = (time_factor * 0.005) + (hazard_intensity * 0.02)  # Much reduced rates
             victim.survival_probability = max(0.0, victim.survival_probability - survival_decrease)
             
             # Critical victims (injury level 4-5) lose survival faster but still slowly
             if victim.injury_level >= 4:
-                victim.survival_probability = max(0.0, victim.survival_probability - 0.002)
+                victim.survival_probability = max(0.0, victim.survival_probability - 0.01)  # Much reduced
             
             # Only mark victims as dead if survival probability is extremely low (almost impossible to rescue)
-            if victim.survival_probability <= 0.0:  # only remove when exactly dead
+            if victim.survival_probability <= 0.01:  # Much lower threshold
                 dead_victims.append(victim)
         
         # Remove dead victims from the simulation
@@ -677,62 +673,20 @@ class DisasterSimulator:
         """Get available resources near a position"""
         nearby_resources = []
         for r, c, resource_type in self.state.resources:
-            # Skip markers of already used resources
-            if isinstance(resource_type, str) and resource_type.startswith('used_'):
-                continue
             distance = abs(r - position[0]) + abs(c - position[1])
-            if distance <= 4:  # Expanded search radius for better variety
+            if distance <= 2:  # Within 2 cells
                 nearby_resources.append((r, c, resource_type))
         return nearby_resources
 
     def _select_resources_for_rescue(self, available_resources):
         """Select appropriate resources for rescue operation"""
-        # Prefer nearby real resources; if none, choose based on disaster type
-        chosen: List[str] = []
-
-        if available_resources:
-            # Pick one primary nearby resource (avoid always medical if others exist)
-            non_med = [r for r in available_resources if r[2] != "medical_supplies"]
-            primary_pool = non_med if non_med else available_resources
-            primary = random.choice(primary_pool)[2]
-            chosen.append(primary)
-        else:
-            # Disaster-specific fallback selection to ensure variety
-            disaster = self.state.disaster_type or "earthquake"
-            weights_map = {
-                "fire": [
-                    ("fire_truck", 0.7), ("helicopter", 0.25), ("medical_supplies", 0.05)
-                ],
-                "flood": [
-                    ("boat", 0.7), ("helicopter", 0.25), ("medical_supplies", 0.05)
-                ],
-                "earthquake": [
-                    ("heavy_machinery", 0.55), ("ambulance", 0.4), ("medical_supplies", 0.05)
-                ],
-                "hurricane": [
-                    ("helicopter", 0.7), ("ambulance", 0.25), ("medical_supplies", 0.05)
-                ],
-                "tornado": [
-                    ("ambulance", 0.5), ("heavy_machinery", 0.45), ("medical_supplies", 0.05)
-                ]
-            }
-            pool = weights_map.get(disaster, [("medical_supplies", 1.0)])
-            # Weighted choice
-            rnd = random.random()
-            acc = 0.0
-            primary = pool[-1][0]
-            for name, w in pool:
-                acc += w
-                if rnd <= acc:
-                    primary = name
-                    break
-            chosen.append(primary)
-
-        # Optionally add medical supplies as a secondary supportive resource
-        if "medical_supplies" not in chosen and random.random() < 0.3:
-            chosen.append("medical_supplies")
-
-        return chosen
+        if not available_resources:
+            return ["medical_supplies"]  # Default resource aligns with UI icons
+        
+        # Select 1-2 random resources from available ones
+        num_resources = min(2, len(available_resources))
+        selected = random.sample(available_resources, num_resources)
+        return [resource[2] for resource in selected]  # Return resource types
 
     def _add_used_resources_at_victim_location(self, position, used_resources):
         """Add used resources at victim location for visualization"""
@@ -883,9 +837,6 @@ async def recommend_path():
     path_length = len(path) if path else 0
     estimated_time = path_length * 2  # 2 seconds per step
     risk_level = simulator._calculate_path_risk(rescue_team.position, nearest_victim.position) if path else 0
-    
-    # Align AI to follow this recommendation
-    simulator.current_target = nearest_victim.position
     
     return {
         "path": path,

@@ -317,7 +317,7 @@ class DisasterSimulator:
                             
                             if random.random() < spread_prob:
                                 new_intensity = intensity * random.uniform(0.4, 0.7)  # Slower intensity transfer
-                                new_hazards[(nr, nc)] = max(new_hazards.get((nr, nc), 0), new_intensity)
+                            new_hazards[(nr, nc)] = max(new_hazards.get((nr, nc), 0), new_intensity)
         
         # Intensify existing hazards over time (slower changes)
         for pos in list(new_hazards.keys()):
@@ -345,20 +345,18 @@ class DisasterSimulator:
             hazard_intensity = self.state.hazards.get(victim.position, 0)
             time_factor = self.state.time_step - victim.time_discovered
             
-            # Much slower survival decrease with caps for longer lifespan
-            base_decay = min(0.05, time_factor * 0.002)  # very gentle over time
-            hazard_decay = hazard_intensity * 0.005       # gentler hazard impact
+            # Much slower survival decrease with cap, ensuring minimum lifespan
+            base_decay = min(0.15, time_factor * 0.003)  # cap base over time
+            hazard_decay = hazard_intensity * 0.01       # gentler hazard impact
             survival_decrease = base_decay + hazard_decay
-            # absolute per-step cap to avoid sudden drops
-            survival_decrease = min(survival_decrease, 0.01)
             victim.survival_probability = max(0.0, victim.survival_probability - survival_decrease)
             
             # Critical victims (injury level 4-5) lose survival faster but still slowly
             if victim.injury_level >= 4:
-                victim.survival_probability = max(0.0, victim.survival_probability - 0.002)
+                victim.survival_probability = max(0.0, victim.survival_probability - 0.004)
             
             # Only mark victims as dead if survival probability is extremely low (almost impossible to rescue)
-            if victim.survival_probability <= 0.0:  # only remove when exactly dead
+            if victim.survival_probability <= 0.005:  # even lower threshold for death
                 dead_victims.append(victim)
         
         # Remove dead victims from the simulation
@@ -468,29 +466,29 @@ class DisasterSimulator:
                 rescue_success_rate = min(0.95, base_success_rate + survival_bonus)  # Cap at 95%
                 
                 if random.random() < rescue_success_rate:
-                    self.state.rescue_team.resources -= 1
-                    self.stats['victims_saved'] += 1
-                    rescued.append(victim)
+                self.state.rescue_team.resources -= 1
+                self.stats['victims_saved'] += 1
+                rescued.append(victim)
                     # Update team status temporarily
                     self.state.rescue_team.status = "rescuing"
                     self.state.rescue_team.current_load += 1
                     # Reset status after rescue to continue to next victim
                     self.state.rescue_team.status = "idle"
-                    # Determine which resources are available and used
-                    available_resources = self._get_available_resources_nearby(team_pos)
-                    used_resources = self._select_resources_for_rescue(available_resources)
-                    # Track rescue operation with specific resource usage
-                    self.stats['rescue_operations'] = self.stats.get('rescue_operations', [])
-                    self.stats['rescue_operations'].append({
-                        'step': self.state.time_step,
+                # Determine which resources are available and used
+                available_resources = self._get_available_resources_nearby(team_pos)
+                used_resources = self._select_resources_for_rescue(available_resources)
+                # Track rescue operation with specific resource usage
+                self.stats['rescue_operations'] = self.stats.get('rescue_operations', [])
+                self.stats['rescue_operations'].append({
+                    'step': self.state.time_step,
                         'victim': victim.position,
-                        'rescuer': team_pos,
-                        'resources_used': used_resources,
+                    'rescuer': team_pos,
+                    'resources_used': used_resources,
                         'success': True,
                         'survival_probability': victim.survival_probability,
                         'injury_level': victim.injury_level
-                    })
-                    # Add used resources at the victim's location for visualization
+                })
+                # Add used resources at the victim's location for visualization
                     self._add_used_resources_at_victim_location(victim.position, used_resources)
                     print(f"🎉 VICTIM RESCUED at {victim.position} (survival: {victim.survival_probability:.2f}, injury: {victim.injury_level}) using resources: {used_resources}")
                 else:
@@ -701,19 +699,19 @@ class DisasterSimulator:
             disaster = self.state.disaster_type or "earthquake"
             weights_map = {
                 "fire": [
-                    ("fire_truck", 0.7), ("helicopter", 0.25), ("medical_supplies", 0.05)
+                    ("fire_truck", 0.6), ("helicopter", 0.2), ("medical_supplies", 0.2)
                 ],
                 "flood": [
-                    ("boat", 0.7), ("helicopter", 0.25), ("medical_supplies", 0.05)
+                    ("boat", 0.6), ("helicopter", 0.2), ("medical_supplies", 0.2)
                 ],
                 "earthquake": [
-                    ("heavy_machinery", 0.55), ("ambulance", 0.4), ("medical_supplies", 0.05)
+                    ("heavy_machinery", 0.4), ("ambulance", 0.4), ("medical_supplies", 0.2)
                 ],
                 "hurricane": [
-                    ("helicopter", 0.7), ("ambulance", 0.25), ("medical_supplies", 0.05)
+                    ("helicopter", 0.5), ("ambulance", 0.3), ("medical_supplies", 0.2)
                 ],
                 "tornado": [
-                    ("ambulance", 0.5), ("heavy_machinery", 0.45), ("medical_supplies", 0.05)
+                    ("ambulance", 0.4), ("heavy_machinery", 0.3), ("medical_supplies", 0.3)
                 ]
             }
             pool = weights_map.get(disaster, [("medical_supplies", 1.0)])
@@ -729,7 +727,7 @@ class DisasterSimulator:
             chosen.append(primary)
 
         # Optionally add medical supplies as a secondary supportive resource
-        if "medical_supplies" not in chosen and random.random() < 0.3:
+        if "medical_supplies" not in chosen and random.random() < 0.5:
             chosen.append("medical_supplies")
 
         return chosen

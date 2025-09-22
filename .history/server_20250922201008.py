@@ -701,19 +701,19 @@ class DisasterSimulator:
             disaster = self.state.disaster_type or "earthquake"
             weights_map = {
                 "fire": [
-                    ("fire_truck", 0.7), ("helicopter", 0.25), ("medical_supplies", 0.05)
+                    ("fire_truck", 0.6), ("helicopter", 0.2), ("medical_supplies", 0.2)
                 ],
                 "flood": [
-                    ("boat", 0.7), ("helicopter", 0.25), ("medical_supplies", 0.05)
+                    ("boat", 0.6), ("helicopter", 0.2), ("medical_supplies", 0.2)
                 ],
                 "earthquake": [
-                    ("heavy_machinery", 0.55), ("ambulance", 0.4), ("medical_supplies", 0.05)
+                    ("heavy_machinery", 0.4), ("ambulance", 0.4), ("medical_supplies", 0.2)
                 ],
                 "hurricane": [
-                    ("helicopter", 0.7), ("ambulance", 0.25), ("medical_supplies", 0.05)
+                    ("helicopter", 0.5), ("ambulance", 0.3), ("medical_supplies", 0.2)
                 ],
                 "tornado": [
-                    ("ambulance", 0.5), ("heavy_machinery", 0.45), ("medical_supplies", 0.05)
+                    ("ambulance", 0.4), ("heavy_machinery", 0.3), ("medical_supplies", 0.3)
                 ]
             }
             pool = weights_map.get(disaster, [("medical_supplies", 1.0)])
@@ -729,7 +729,7 @@ class DisasterSimulator:
             chosen.append(primary)
 
         # Optionally add medical supplies as a secondary supportive resource
-        if "medical_supplies" not in chosen and random.random() < 0.3:
+        if "medical_supplies" not in chosen and random.random() < 0.5:
             chosen.append("medical_supplies")
 
         return chosen
